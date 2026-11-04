@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
   initNavigation();
   initHeroSlider();
+  initGalleryMarqueeRows();
   initGalleryFilter();
+  initGalleryLightbox();
   initForms();
   initScrollAnimations();
   initWhatsAppFloat();
@@ -98,7 +100,7 @@ function initHeroSlider() {
 
 function initGalleryFilter() {
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const galleryItems = document.querySelectorAll('.gallery-item');
+  const galleryItems = document.querySelectorAll('.gallery-photo-card, .gallery-card, .gallery-item');
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', function() {
@@ -117,6 +119,132 @@ function initGalleryFilter() {
         }
       });
     });
+  });
+}
+
+function initGalleryMarqueeRows() {
+  const gallery = document.querySelector('.gallery-grid');
+  if (!gallery) return;
+
+  const items = Array.from(gallery.querySelectorAll(':scope > .gallery-item'));
+  if (items.length < 2) return;
+
+  gallery.classList.add('gallery-marquee-rows');
+  gallery.replaceChildren();
+
+  [items.filter((_, index) => index % 2 === 0), items.filter((_, index) => index % 2 === 1)]
+    .forEach((rowItems, index) => {
+      const row = document.createElement('div');
+      row.className = 'gallery-marquee-row';
+      row.setAttribute('role', 'list');
+      row.setAttribute('aria-label', `Gallery photos row ${index + 1}`);
+
+      const track = document.createElement('div');
+      track.className = 'gallery-grid-track';
+
+      const group = document.createElement('div');
+      group.className = 'gallery-grid-group';
+      rowItems.forEach(item => {
+        item.removeAttribute('style');
+        group.appendChild(item);
+      });
+
+      const duplicate = group.cloneNode(true);
+      duplicate.setAttribute('aria-hidden', 'true');
+      duplicate.inert = true;
+      track.append(group, duplicate);
+      row.appendChild(track);
+      gallery.appendChild(row);
+    });
+}
+
+function initGalleryLightbox() {
+  const links = document.querySelectorAll('.gallery-photo-link');
+  if (!links.length) return;
+
+  const existing = document.getElementById('gallery-lightbox');
+  if (existing) return;
+
+  const lightbox = document.createElement('div');
+  lightbox.id = 'gallery-lightbox';
+  lightbox.className = 'lightbox';
+  lightbox.setAttribute('aria-hidden', 'true');
+  lightbox.setAttribute('role', 'dialog');
+  lightbox.setAttribute('aria-modal', 'true');
+  lightbox.innerHTML = `
+    <div class="lightbox-content" role="img" aria-label="Gallery photo">
+      <div class="lb-loader"><div class="lb-spinner"></div></div>
+      <img class="lb-image" alt="Enlarged gallery photo">
+      <button class="lb-close" aria-label="Close photo">&times;</button>
+      <div class="lb-caption"></div>
+      <div class="lb-hint">Press Esc to close</div>
+    </div>
+  `;
+  document.body.appendChild(lightbox);
+
+  const content = lightbox.querySelector('.lightbox-content');
+  const image = lightbox.querySelector('.lb-image');
+  const caption = lightbox.querySelector('.lb-caption');
+  const loader = lightbox.querySelector('.lb-loader');
+  const closeBtn = lightbox.querySelector('.lb-close');
+
+  let currentSrc = '';
+
+  function openLightbox(src, cap) {
+    currentSrc = src;
+    image.src = '';
+    image.classList.remove('ready');
+    image.alt = cap || 'Enlarged gallery photo';
+    caption.textContent = cap || '';
+    lightbox.setAttribute('aria-hidden', 'false');
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    loader.style.display = 'flex';
+    const img = new Image();
+    img.onload = function() {
+      image.src = currentSrc;
+      image.classList.add('ready');
+      loader.style.display = 'none';
+    };
+    img.onerror = function() {
+      loader.style.display = 'none';
+      image.src = currentSrc;
+      image.classList.add('ready');
+    };
+    img.src = src;
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    image.src = '';
+    image.classList.remove('ready');
+    loader.style.display = 'none';
+  }
+
+  links.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const src = this.getAttribute('data-src') || this.getAttribute('href');
+      const cap = this.getAttribute('aria-label') || this.querySelector('img')?.getAttribute('alt') || '';
+      openLightbox(src, cap);
+    });
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+      closeLightbox();
+    }
   });
 }
 
@@ -265,6 +393,8 @@ function initScrollAnimations() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('animate-in');
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
         observer.unobserve(entry.target);
       }
     });
@@ -291,25 +421,9 @@ function initWhatsAppFloat() {
   const whatsappFloat = document.querySelector('.whatsapp-float');
   if (!whatsappFloat) return;
 
-  let lastScrollY = window.scrollY;
-
-  window.addEventListener('scroll', function() {
-    if (window.scrollY > 300) {
-      whatsappFloat.style.opacity = '1';
-      whatsappFloat.style.visibility = 'visible';
-      whatsappFloat.style.transform = 'translateY(0)';
-    } else {
-      whatsappFloat.style.opacity = '0';
-      whatsappFloat.style.visibility = 'hidden';
-      whatsappFloat.style.transform = 'translateY(20px)';
-    }
-    lastScrollY = window.scrollY;
-  });
-
-  whatsappFloat.style.opacity = '0';
-  whatsappFloat.style.visibility = 'hidden';
-  whatsappFloat.style.transform = 'translateY(20px)';
-  whatsappFloat.style.transition = 'opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease';
+  whatsappFloat.style.opacity = '1';
+  whatsappFloat.style.visibility = 'visible';
+  whatsappFloat.style.transform = 'translateY(0)';
 }
 
 function initBackToTop() {
