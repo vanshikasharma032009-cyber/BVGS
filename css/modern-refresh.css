@@ -174,3 +174,41 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* CBSE Mandatory Public Disclosure callout */
+.cbse-disclosure-promo {
+  padding: 30px 0;
+  background: linear-gradient(110deg, #f1f7fb 0%, #ffffff 100%);
+  border-top: 1px solid #e3edf4;
+  border-bottom: 1px solid #e3edf4;
+}
+.cbse-disclosure-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.cbse-eyebrow {
+  display: inline-block;
+  color: #e19a24;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.cbse-disclosure-inner h2 {
+  margin: 6px 0 8px;
+  color: #174d70;
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+}
+.cbse-disclosure-inner p {
+  margin: 0;
+  max-width: 700px;
+  color: #526575;
+  line-height: 1.65;
+}
+.cbse-disclosure-inner .btn { flex: 0 0 auto; }
+@media (max-width: 700px) {
+  .cbse-disclosure-inner { align-items: flex-start; flex-direction: column; }
+  .cbse-disclosure-inner .btn { width: 100%; text-align: center; }
+}
