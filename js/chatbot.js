@@ -305,9 +305,10 @@ class Chatbot {
   }
   
   normalizeText(text) {
-    return text.toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
-      .replace(/\s+/g, ' ')
+    // Preserve Hindi/Devanagari letters as well as English letters and digits.
+    return String(text || '').toLocaleLowerCase('hi')
+      .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
+      .replace(/\\s+/g, ' ')
       .trim();
   }
 
@@ -352,30 +353,37 @@ class Chatbot {
 
   findAnswer(userMessage) {
     const normalized = this.normalizeText(userMessage);
+    const tokens = normalized.split(/\\s+/).filter(token => token.length > 1);
 
-    // Check FAQ list first (instant answers for common questions)
-    for (let faq of FAQ_LIST) {
+    // Choose the strongest FAQ match instead of returning the first broad keyword.
+    let bestFaq = null;
+    let bestScore = 0;
+    for (const faq of FAQ_LIST) {
       if (faq.isGreeting) continue;
-
-      for (let keyword of faq.keywords) {
-        if (normalized.includes(this.normalizeText(keyword))) {
-          return faq.answer;
-        }
+      let score = 0;
+      for (const keyword of faq.keywords) {
+        const key = this.normalizeText(keyword);
+        if (!key) continue;
+        if (normalized === key) score = Math.max(score, 10 + key.length);
+        else if (key.includes(' ') && normalized.includes(key)) score = Math.max(score, 8 + key.length);
+        else if (tokens.includes(key)) score = Math.max(score, 4 + key.length);
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        bestFaq = faq;
       }
     }
+    if (bestFaq && bestScore >= 4) return bestFaq.answer;
 
-    // Search actual website content for the answer
+    // Search the actual pages when no FAQ is a confident match.
     const webMatch = this.searchWebsiteContext(userMessage);
     if (webMatch) {
       const pageNames = webMatch.pages.map(p => p.replace('.html', ''));
-      const source = pageNames.length > 0
-        ? ` (स्रोत: ${pageNames.join(', ')} पेज)`
-        : '';
-      return webMatch.answer + "\nहिन्दी: ऊपर दी गई जानकारी वेबसाइट से ली गई है।" + source;
+      const source = pageNames.length ? ` (स्रोत: ${pageNames.join(', ')} पेज)` : '';
+      return webMatch.answer + "\\nयह जानकारी स्कूल की वेबसाइट से ली गई है।" + source;
     }
 
-    // If no match found, use fallback
-    return "English: I'm sorry, I don't have information about that. For assistance, please call our school office at PHONE_NUMBER or email us at EMAIL.\nहिन्दी: मुझे इसके बारे में जानकारी नहीं है। सहायता के लिए, कृपया हमारे स्कूल कार्यालय पर PHONE_NUMBER पर कॉल करें या EMAIL पर ईमेल करें।";
+    return "मुझे इस सवाल का सही उत्तर वेबसाइट पर नहीं मिला। कृपया स्कूल कार्यालय से +91-1746-250100 पर संपर्क करें या info@balvikasglobalschool.com पर ईमेल करें। आप Admission, Fees, Classes, Timings, Facilities, Gallery या Contact के बारे में पूछ सकते हैं।";
   }
   
   processMessage(message) {
@@ -422,8 +430,9 @@ class Chatbot {
         throw new Error(data.error || 'Chatbot service returned no reply');
       }
     } catch (error) {
-      console.error('Chatbot API error:', error);
-      this.addMessage("Sorry, the chatbot is temporarily unavailable. Please contact the school through the Contact page.", 'bot');
+      console.error('Chatbot API error; using website FAQ fallback:', error);
+      // Keep answering with local school information if the AI proxy is unavailable.
+      this.addMessage(fillPlaceholders(this.findAnswer(message)), 'bot');
     } finally {
       this.hideTyping();
     }
