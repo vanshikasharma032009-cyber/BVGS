@@ -69,7 +69,7 @@ const FAQ_LIST = [
     category: "Gallery"
   },
   {
-    keywords: ["about", "school", "history", "vision", "mission", "जानकारी"],
+    keywords: ["about", "history", "vision", "mission", "जानकारी"],
     question: ["about"],
     answer: "English: Bal Vikas Global School is a co-educational, English-medium CBSE Senior Secondary school in Kaithal, Haryana. Visit the About page to learn more.\nहिन्दी: बाल विकास ग्लोबल स्कूल कैथल, हरियाणा का एक सह-शिक्षा, अंग्रेजी माध्यम सीबीएसई वरिष्ठ माध्यमिक विद्यालय है। अधिक जानने के लिए About page देखें।",
     category: "About"
