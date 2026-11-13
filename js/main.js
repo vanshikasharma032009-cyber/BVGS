@@ -260,6 +260,22 @@ function initForms() {
         return;
       }
 
+      if (this.id === 'contact-enquiry-form') {
+        const formData = new FormData(this);
+        const message = [
+          'Bal Vikas Global School - Contact Enquiry',
+          'Name: ' + formData.get('name'),
+          'Email: ' + formData.get('email'),
+          'Phone: ' + formData.get('phone'),
+          'Subject: ' + formData.get('subject'),
+          'Message: ' + formData.get('message')
+        ].join('\n');
+        const whatsappUrl = 'https://wa.me/919310726000?text=' + encodeURIComponent(message);
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+        showToast('WhatsApp opened with your enquiry. Please tap Send in WhatsApp to submit it.', 'success');
+        return;
+      }
+
       const submitBtn = this.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML = '<span class="spinner"></span> Sending...';
