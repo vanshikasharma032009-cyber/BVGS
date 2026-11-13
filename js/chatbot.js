@@ -307,8 +307,8 @@ class Chatbot {
   normalizeText(text) {
     // Preserve Hindi/Devanagari letters as well as English letters and digits.
     return String(text || '').toLocaleLowerCase('hi')
-      .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')
-      .replace(/\\s+/g, ' ')
+      .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+      .replace(/\s+/g, ' ')
       .trim();
   }
 
@@ -353,7 +353,7 @@ class Chatbot {
 
   findAnswer(userMessage) {
     const normalized = this.normalizeText(userMessage);
-    const tokens = normalized.split(/\\s+/).filter(token => token.length > 1);
+    const tokens = normalized.split(/\s+/).filter(token => token.length > 1);
 
     // Choose the strongest FAQ match instead of returning the first broad keyword.
     let bestFaq = null;
@@ -380,7 +380,7 @@ class Chatbot {
     if (webMatch) {
       const pageNames = webMatch.pages.map(p => p.replace('.html', ''));
       const source = pageNames.length ? ` (स्रोत: ${pageNames.join(', ')} पेज)` : '';
-      return webMatch.answer + "\\nयह जानकारी स्कूल की वेबसाइट से ली गई है।" + source;
+      return webMatch.answer + "\nयह जानकारी स्कूल की वेबसाइट से ली गई है।" + source;
     }
 
     return "मुझे इस सवाल का सही उत्तर वेबसाइट पर नहीं मिला। कृपया स्कूल कार्यालय से +91-1746-250100 पर संपर्क करें या info@balvikasglobalschool.com पर ईमेल करें। आप Admission, Fees, Classes, Timings, Facilities, Gallery या Contact के बारे में पूछ सकते हैं।";
