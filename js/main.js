@@ -270,7 +270,7 @@ function initForms() {
           'Subject: ' + formData.get('subject'),
           'Message: ' + formData.get('message')
         ].join('\n');
-        const whatsappUrl = 'https://wa.me/919310726000?text=' + encodeURIComponent(message);
+        const whatsappUrl = 'https://wa.me/919671970922?text=' + encodeURIComponent(message);
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
         showToast('WhatsApp opened with your enquiry. Please tap Send in WhatsApp to submit it.', 'success');
         return;
