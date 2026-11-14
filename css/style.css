@@ -712,16 +712,22 @@ ul {
 }
 
 .home-page .about-experience {
-  padding: 16px 24px;
-  border-radius: 16px;
+  right: 20px;
+  bottom: 20px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 11px 17px;
+  border-radius: 14px;
 }
 
 .home-page .experience-number {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  line-height: 1.05;
 }
 
 .home-page .experience-text {
-  font-size: 0.78rem;
+  font-size: 0.68rem;
+  margin-top: 3px;
 }
 
 .experience-text {
