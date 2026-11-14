@@ -245,8 +245,10 @@
       <div class="footer-newsletter">
         <h3 class="footer-title">Newsletter</h3>
         <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 16px; max-width: 260px;">Subscribe to get the latest updates from Bal Vikas Global School.</p>
-        <form class="footer-newsletter-form">
-          <input type="email" placeholder="Enter your email" class="footer-newsletter-input" required>
+        <form class="footer-newsletter-form" action="https://formsubmit.co/info@balvikasglobalschool.com" method="POST">
+          <input type="hidden" name="_subject" value="New Bal Vikas Global School Newsletter Subscription">
+          <input type="hidden" name="_template" value="table">
+          <input name="email" autocomplete="email" type="email" placeholder="Enter your email" class="footer-newsletter-input" required>
           <button type="submit" class="btn btn-primary footer-newsletter-btn">Subscribe</button>
         </form>
       </div>
