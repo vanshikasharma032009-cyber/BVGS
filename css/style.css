@@ -2742,3 +2742,16 @@ ul {
     max-width: 480px;
   }
 }
+
+/* Student photos for Nursery, Middle and Secondary academic cards */
+.academic-photo {
+  height: 190px;
+  min-height: 190px;
+  background-image: url('/images/academic-students.jpg');
+  background-repeat: no-repeat;
+  background-size: 300% 100%;
+  background-color: #e6f2ec;
+}
+.academic-photo-nursery { background-position: 0% 50%; }
+.academic-photo-middle { background-position: 50% 50%; }
+.academic-photo-secondary { background-position: 100% 50%; }
