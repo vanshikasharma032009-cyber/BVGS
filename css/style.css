@@ -2768,3 +2768,11 @@ ul {
 .footer .footer-about .logo-tagline {
   color: #ffffff !important;
 }
+
+/* Make footer address, phone and email details pure white on every page */
+.footer .footer-contact .contact-text,
+.footer .footer-contact .contact-text p,
+.footer .footer-contact .contact-text a,
+.footer .footer-contact .contact-text h4 {
+  color: #ffffff !important;
+}
