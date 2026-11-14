@@ -2776,3 +2776,9 @@ ul {
 .footer .footer-contact .contact-text h4 {
   color: #ffffff !important;
 }
+
+
+/* Crisp official-style footer social media marks */
+.footer-social .social-link .brand-icon { width: 22px; height: 22px; display: block; flex: 0 0 22px; }
+.footer-social .social-link[aria-label="Facebook"] .brand-icon { width: 20px; height: 20px; }
+.footer-social .social-link[aria-label="Instagram"] .brand-icon { width: 21px; height: 21px; }
