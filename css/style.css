@@ -711,8 +711,17 @@ ul {
   line-height: 1;
 }
 
+.home-page .about-experience {
+  padding: 16px 24px;
+  border-radius: 16px;
+}
+
 .home-page .experience-number {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
+}
+
+.home-page .experience-text {
+  font-size: 0.78rem;
 }
 
 .experience-text {
