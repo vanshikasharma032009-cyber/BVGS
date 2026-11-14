@@ -2782,3 +2782,9 @@ ul {
 .footer-social .social-link .brand-icon { width: 22px; height: 22px; display: block; flex: 0 0 22px; }
 .footer-social .social-link[aria-label="Facebook"] .brand-icon { width: 20px; height: 20px; }
 .footer-social .social-link[aria-label="Instagram"] .brand-icon { width: 21px; height: 21px; }
+
+
+/* Official brand-colour marks for the Contact Us social buttons */
+.contact-social .contact-brand-icon { width: 23px; height: 23px; display: block; flex: 0 0 23px; }
+.contact-social .social-link { background: #ffffff; }
+.contact-social .social-link:hover .contact-brand-icon { filter: brightness(.96); }
