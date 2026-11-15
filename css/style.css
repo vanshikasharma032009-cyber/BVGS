@@ -1982,6 +1982,76 @@ ul {
   }
 }
 
+
+/* Floating YouTube channel shortcut */
+.youtube-float {
+  position: fixed;
+  left: 30px;
+  bottom: 20px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  color: #fff;
+  background: #ff0000;
+  box-shadow: 0 4px 20px rgba(255, 0, 0, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.youtube-float svg {
+  width: 34px;
+  height: 34px;
+}
+.youtube-float:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 28px rgba(255, 0, 0, 0.38);
+}
+.youtube-tooltip {
+  position: absolute;
+  left: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: #fff;
+  background: var(--primary-dark);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+.youtube-tooltip::after {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 8px solid transparent;
+  border-right-color: var(--primary-dark);
+}
+.youtube-float:hover .youtube-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+@media (max-width: 768px) {
+  .youtube-float {
+    left: 16px;
+    bottom: 20px;
+    width: 56px;
+    height: 56px;
+  }
+  .youtube-float svg {
+    width: 30px;
+    height: 30px;
+  }
+  .youtube-tooltip {
+    display: none;
+  }
+}
+
 .whatsapp-float {
   position: fixed;
   bottom: 20px;
