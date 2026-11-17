@@ -2861,6 +2861,14 @@ ul {
 .contact-social .social-link:hover .contact-brand-icon { filter: brightness(.96); }
 
 
+/* YouTube footer button: red brand disc with a crisp white play mark */
+.footer-social .social-link[aria-label="YouTube"],
+.footer-social .social-link[aria-label="YouTube"]:hover {
+  color: #ffffff;
+  background: #FF0000;
+  border: 0;
+}
+
 /* Official platform colours for social icons in every page footer */
 .footer-social .social-link[aria-label="Facebook"],
 .footer-social .social-link[aria-label="Facebook"]:hover {
