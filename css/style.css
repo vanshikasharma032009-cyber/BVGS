@@ -3000,31 +3000,54 @@ ul {
   .gallery-photo-wrapper { height: 190px; }
 }
 
-/* Scrolling CBSE affiliation detail in the top information bar */
+/* Opposite-direction marquee motion for address and CBSE details in the top bar */
+.site-topbar-content {
+  gap: 28px;
+}
+.site-topbar-content .location-marquee,
 .site-topbar-content .cbse-marquee {
-  flex: 0 1 270px;
+  flex: 1 1 50%;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
-  text-align: right;
 }
+.site-topbar-content .location-marquee { text-align: left; }
+.site-topbar-content .cbse-marquee { text-align: right; }
+.site-topbar-content .location-marquee span,
 .site-topbar-content .cbse-marquee span {
   display: inline-block;
   white-space: nowrap;
   will-change: transform;
-  animation: cbse-marquee-scroll 13s linear infinite;
+}
+.site-topbar-content .location-marquee span {
+  animation: address-marquee-scroll 16s linear infinite;
+}
+.site-topbar-content .cbse-marquee span {
+  animation: cbse-marquee-scroll 16s linear infinite;
+}
+@keyframes address-marquee-scroll {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }
 @keyframes cbse-marquee-scroll {
   from { transform: translateX(100%); }
   to { transform: translateX(-100%); }
 }
+.site-topbar-content .location-marquee:hover span,
 .site-topbar-content .cbse-marquee:hover span {
   animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
-  .site-topbar-content .cbse-marquee span { animation: none; transform: none; }
+  .site-topbar-content .location-marquee span,
+  .site-topbar-content .cbse-marquee span {
+    animation: none;
+    transform: none;
+  }
 }
 @media (max-width: 600px) {
-  .site-topbar-content .cbse-marquee { flex-basis: 48%; }
-  .site-topbar-content .cbse-marquee span { animation-duration: 16s; }
+  .site-topbar-content { gap: 12px; }
+  .site-topbar-content .location-marquee,
+  .site-topbar-content .cbse-marquee { flex-basis: 50%; }
+  .site-topbar-content .location-marquee span,
+  .site-topbar-content .cbse-marquee span { animation-duration: 19s; }
 }
