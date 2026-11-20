@@ -174,3 +174,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+/* Accessibility: keep breadcrumb text readable against the dark page-header overlay. */
+.page-header-breadcrumb span {
+  color: #f7dfa0;
+}
+.section-subtitle {
+  color: #526257;
+}
