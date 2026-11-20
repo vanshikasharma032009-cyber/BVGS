@@ -90,10 +90,8 @@ class Chatbot {
     this.isOpen = false;
     this.messages = [];
     this.pagesContext = [];
-    this.websiteContextPromise = this.loadWebsiteContext().catch(error => {
-      console.error('Chatbot website context error:', error);
-      return [];
-    });
+    // Load page context only when a visitor opens the chatbot, not during initial page load.
+    this.websiteContextPromise = null;
     this.init();
   }
   
@@ -228,6 +226,12 @@ class Chatbot {
     if (this.isOpen) {
       window.classList.add('active');
       toggle.classList.add('active');
+      if (!this.websiteContextPromise) {
+        this.websiteContextPromise = this.loadWebsiteContext().catch(error => {
+          console.error('Chatbot website context error:', error);
+          return [];
+        });
+      }
       setTimeout(() => {
         document.getElementById('chatbotInput').focus();
       }, 300);
@@ -405,12 +409,17 @@ class Chatbot {
     return "मुझे इस सवाल का सही उत्तर वेबसाइट पर नहीं मिला। कृपया स्कूल कार्यालय से +91-1746-250100 पर संपर्क करें या info@balvikasglobalschool.com पर ईमेल करें। आप Admission, Fees, Classes, Timings, Facilities, Gallery या Contact के बारे में पूछ सकते हैं।";
   }
   
-  processMessage(message) {
+  async processMessage(message) {
     this.showTyping();
-    
-    // Try Groq API first if proxy URL is configured
+
+    // Wait for the optional page context, which starts only after the chatbot is opened.
+    if (this.websiteContextPromise) {
+      await this.websiteContextPromise;
+    }
+
+    // Try Groq API first if proxy URL is configured.
     if (GROQ_PROXY_URL && GROQ_PROXY_URL !== "YOUR_CLOUDFLARE_WORKER_URL_HERE") {
-      this.callGroqAPI(message);
+      await this.callGroqAPI(message);
     } else {
       setTimeout(() => {
         this.hideTyping();
