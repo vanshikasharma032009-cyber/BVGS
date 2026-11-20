@@ -2999,3 +2999,32 @@ ul {
 @media (max-width: 768px) {
   .gallery-photo-wrapper { height: 190px; }
 }
+
+/* Scrolling CBSE affiliation detail in the top information bar */
+.site-topbar-content .cbse-marquee {
+  flex: 0 1 270px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: right;
+}
+.site-topbar-content .cbse-marquee span {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+  animation: cbse-marquee-scroll 13s linear infinite;
+}
+@keyframes cbse-marquee-scroll {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
+.site-topbar-content .cbse-marquee:hover span {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-topbar-content .cbse-marquee span { animation: none; transform: none; }
+}
+@media (max-width: 600px) {
+  .site-topbar-content .cbse-marquee { flex-basis: 48%; }
+  .site-topbar-content .cbse-marquee span { animation-duration: 16s; }
+}
