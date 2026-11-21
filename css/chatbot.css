@@ -1,15 +1,15 @@
 /* Chatbot Styles for Bal Vikas Global School */
 .chatbot-container {
   position: fixed;
-  bottom: 100px;
-  right: 30px;
+  bottom: 88px;
+  right: 20px;
   z-index: 10000;
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 .chatbot-toggle {
-  width: 82px;
-  height: 98px;
+  width: 66px;
+  height: 78px;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -25,48 +25,48 @@
   filter: drop-shadow(0 7px 10px rgba(0, 30, 60, 0.2));
 }
 .chatbot-toggle:hover { transform: translateY(-5px) scale(1.04); }
-.chatbot-robot { position: relative; display:block; width:76px; height:86px; }
+.chatbot-robot { position: relative; display:block; width:62px; height:70px; }
 .chatbot-robot-antenna {
-  position:absolute; top:0; left:36px; width:5px; height:13px;
+  position:absolute; top:0; left:29px; width:4px; height:10px;
   border-radius:5px; background:linear-gradient(#b9faff,#0879b9);
 }
 .chatbot-robot-antenna::after {
-  content:""; position:absolute; top:-5px; left:-3px; width:11px; height:11px;
+  content:""; position:absolute; top:-4px; left:-3px; width:10px; height:10px;
   border-radius:50%; background:#00d9ff; box-shadow:0 0 10px #00d9ff;
 }
 .chatbot-robot-head {
-  position:absolute; top:12px; left:3px; width:70px; height:59px;
+  position:absolute; top:10px; left:2px; width:58px; height:49px;
   border:5px solid #eaf5f8; border-radius:22px;
   background:linear-gradient(145deg,#172d3a,#020b13 75%);
   box-shadow:inset 0 2px 5px #6e8791,0 5px 12px #081d2b55;
 }
 .chatbot-robot-eye {
-  position:absolute; top:16px; width:13px; height:18px; border-radius:50%;
+  position:absolute; top:13px; width:11px; height:15px; border-radius:50%;
   background:#00eaff; box-shadow:0 0 8px 3px #00cfff99;
 }
-.chatbot-robot-eye-left { left:12px; }
-.chatbot-robot-eye-right { right:12px; }
+.chatbot-robot-eye-left { left:10px; }
+.chatbot-robot-eye-right { right:10px; }
 .chatbot-robot-smile {
-  position:absolute; left:27px; bottom:10px; width:11px; height:5px;
+  position:absolute; left:23px; bottom:8px; width:10px; height:4px;
   border-bottom:2px solid #00eaff; border-radius:0 0 12px 12px;
 }
 .chatbot-robot-neck {
-  position:absolute; left:32px; top:69px; width:12px; height:6px;
+  position:absolute; left:26px; top:57px; width:10px; height:5px;
   background:#9bb9c5;
 }
 .chatbot-robot-body {
-  position:absolute; bottom:0; left:19px; width:38px; height:15px;
+  position:absolute; bottom:0; left:15px; width:32px; height:13px;
   border-radius:15px 15px 9px 9px; background:linear-gradient(135deg,#fff,#b8d4df);
   box-shadow:inset 0 2px 4px #fff;
 }
 .chatbot-robot-body span {
-  position:absolute; left:14px; top:3px; width:10px; height:10px;
+  position:absolute; left:11px; top:2px; width:9px; height:9px;
   border-radius:50%; background:#00bfff; box-shadow:0 0 7px #00dfff;
 }
 .chatbot-robot-label {
-  position:absolute; right:72px; top:12px; white-space:nowrap;
+  position:absolute; right:58px; top:8px; white-space:nowrap;
   padding:6px 10px; border-radius:15px; background:#fff; color:#16405b;
-  font-size:12px; font-weight:700; box-shadow:0 3px 12px #001d3422;
+  font-size:11px; font-weight:700; box-shadow:0 3px 12px #001d3422;
 }
 .chatbot-toggle.active {
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
