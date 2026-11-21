@@ -1983,7 +1983,7 @@ ul {
 }
 
 
-/* Floating YouTube shortcut: recognizable YouTube logo, not a generic play button */
+/* Floating YouTube shortcut: authentic YouTube logo in a clean circular button */
 .youtube-float {
   position: fixed;
   left: 30px;
@@ -1993,33 +1993,30 @@ ul {
   align-items: center;
   justify-content: center;
   width: 64px;
-  height: 48px;
-  border-radius: 12px;
-  color: #fff;
-  background: transparent;
-  box-shadow: none;
-  transition: transform 0.2s ease;
+  height: 64px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .youtube-float svg {
-  width: 52px;
-  height: 37px;
   display: block;
+  width: 44px;
+  height: 31px;
 }
-
 .youtube-float svg path:first-child {
-  fill: #FF0000;
+  fill: #FF0033;
 }
-
 .youtube-float svg path:last-child {
   fill: #FFFFFF;
 }
 .youtube-float:hover {
   transform: scale(1.08);
-  box-shadow: none;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
 }
 .youtube-tooltip {
   position: absolute;
-  left: 80px;
+  left: 76px;
   top: 50%;
   transform: translateY(-50%);
   padding: 8px 14px;
@@ -2053,8 +2050,8 @@ ul {
     height: 56px;
   }
   .youtube-float svg {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 28px;
   }
   .youtube-tooltip {
     display: none;
