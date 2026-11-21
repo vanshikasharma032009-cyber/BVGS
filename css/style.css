@@ -704,6 +704,17 @@ ul {
   text-align: center;
 }
 
+/* Keep the About page's "Since 2017" badge compact */
+.about-image .about-experience .experience-number {
+  font-size: 1.65rem;
+  line-height: 1.1;
+}
+@media (max-width: 768px) {
+  .about-image .about-experience .experience-number {
+    font-size: 1.35rem;
+  }
+}
+
 .experience-number {
   font-size: 3rem;
   font-weight: 700;
