@@ -138,8 +138,18 @@ class Chatbot {
   createChatbotHTML() {
     const chatbotHTML = `
       <div class="chatbot-container">
-        <button class="chatbot-toggle" id="chatbotToggle" aria-label="Open chat">
-          <img class="chatbot-toggle-image" src="https://img.magnific.com/free-vector/chatbot-conversation-vectorart_78370-4107.jpg?semt=ais_hybrid&w=740&q=80" alt="">
+        <button class="chatbot-toggle" id="chatbotToggle" aria-label="Open BVGS chatbot">
+          <span class="chatbot-robot" aria-hidden="true">
+            <span class="chatbot-robot-antenna"></span>
+            <span class="chatbot-robot-head">
+              <span class="chatbot-robot-eye chatbot-robot-eye-left"></span>
+              <span class="chatbot-robot-eye chatbot-robot-eye-right"></span>
+              <span class="chatbot-robot-smile"></span>
+            </span>
+            <span class="chatbot-robot-neck"></span>
+            <span class="chatbot-robot-body"><span></span></span>
+          </span>
+          <span class="chatbot-robot-label">Chat with us!</span>
         </button>
         <div class="chatbot-window" id="chatbotWindow">
           <div class="chatbot-header">
