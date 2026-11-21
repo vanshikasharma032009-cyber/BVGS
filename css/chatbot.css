@@ -120,7 +120,7 @@
   padding: 6px 9px;
   color: #fff;
   background: transparent;
-  font: 600 11px/1.2 inherit;
+  font-family: inherit;\n  font-size: 11px;\n  font-weight: 600;\n  line-height: 1.2;
   cursor: pointer;
   white-space: nowrap;
 }
