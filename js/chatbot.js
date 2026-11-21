@@ -316,80 +316,92 @@ class Chatbot {
       .trim();
   }
 
-  searchWebsiteContext(query) {
-    if (!this.pagesContext || this.pagesContext.length === 0) {
-      return null;
-    }
+  getSearchTerms(text) {
+    const stopWords = new Set([
+      'the','is','are','am','a','an','to','for','of','in','on','at','and','or','please',
+      'tell','me','about','what','how','can','i','you','your','school','kya','hai','hain',
+      'ka','ki','ke','ko','se','me','mein','mujhe','batao','bataye','chahiye','karo',
+      'का','की','के','को','है','हैं','में','से','और','बताओ','कृपया','मुझे','क्या'
+    ]);
+    const aliases = {
+      dakhila:'admission', daakhila:'admission', pravesh:'admission', admission:'admission',
+      shulk:'fees', fee:'fees', fees:'fees', kitni:'fees', kitna:'fees', kitne:'fees',
+      paisa:'fees', paise:'fees', rupaye:'fees', payment:'fees',
+      samay:'timing', kab:'timing', time:'timing', timing:'timing',
+      kahan:'address', kaha:'address', pata:'address', location:'address', map:'address',
+      suvidha:'facilities', suvidhaye:'facilities', facility:'facilities',
+      khel:'sports', game:'sports', bus:'transport', gaadi:'transport', van:'transport',
+      pustakalaya:'library', kitaab:'library', books:'library',
+      teacher:'faculty', teachers:'faculty', staff:'faculty', adhyapak:'faculty',
+      principal:'principal', pradhanacharya:'principal',
+      documents:'documents', document:'documents', kagaz:'documents', certificate:'documents',
+      photo:'gallery', pictures:'gallery', images:'gallery'
+    };
+    return this.normalizeText(text).split(/\\s+/)
+      .filter(token => token.length > 1 && !stopWords.has(token))
+      .map(token => aliases[token] || token);
+  }
 
-    const normalized = this.normalizeText(query);
-    const keywords = normalized.split(/\s+/).filter(k => k.length > 2);
-    if (keywords.length === 0) {
-      return null;
-    }
+  searchWebsiteContext(query) {
+    if (!this.pagesContext || this.pagesContext.length === 0) return null;
+    const keywords = [...new Set(this.getSearchTerms(query))];
+    if (keywords.length === 0) return null;
 
     const matches = [];
     for (const {page, text} of this.pagesContext) {
-      const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 20);
-      for (const s of sentences) {
-        const sNorm = this.normalizeText(s);
-        let score = 0;
-        for (const kw of keywords) {
-          if (sNorm.includes(kw)) {
-            score++;
-          }
-        }
-        if (score > 0) {
-          matches.push({page, sentence: s.trim(), score});
-        }
+      const sentences = text.split(/(?<=[.!?।])\\s+/).filter(s => s.trim().length > 24);
+      for (const sentence of sentences) {
+        const sentenceTerms = new Set(this.getSearchTerms(sentence));
+        const matched = keywords.filter(term => sentenceTerms.has(term));
+        if (!matched.length) continue;
+        const coverage = matched.length / keywords.length;
+        const score = matched.length * 3 + coverage * 5;
+        matches.push({page, sentence: sentence.trim(), score, coverage});
       }
     }
-
-    if (matches.length === 0) {
-      return null;
-    }
-
-    matches.sort((a, b) => b.score - a.score);
-    const top = matches.slice(0, 4);
-    const pages = [...new Set(top.map(m => m.page))];
-    const answer = top.map(m => m.sentence).join(' ');
-    return {answer, pages};
+    matches.sort((a, b) => b.score - a.score || b.coverage - a.coverage);
+    const top = matches.filter((item, index, arr) =>
+      arr.findIndex(other => other.sentence === item.sentence) === index
+    ).slice(0, 3);
+    if (!top.length || (top[0].coverage < 0.25 && top[0].score < 4)) return null;
+    return {
+      answer: top.map(item => item.sentence).join(' '),
+      pages: [...new Set(top.map(item => item.page))]
+    };
   }
 
   findAnswer(userMessage) {
-    const latestUserMessages = this.messages.filter(entry => entry.role === 'user').slice(-2);
-    const incomingText = this.normalizeText(userMessage);
-    const isFollowUp = /^(aur|aur batao|more|tell me more|and|what about|uske baare mein|iske baare mein|और बताओ|और जानकारी|उसके बारे में|इसके बारे में)$/.test(incomingText);
-    const effectiveMessage = isFollowUp && latestUserMessages.length > 1
-      ? latestUserMessages[0].content
-      : userMessage;
-    const baseNormalized = this.normalizeText(effectiveMessage);
-    const aliases = {
-      dakhila: 'admission', daakhila: 'admission', pravesh: 'admission',
-      shulk: 'fees', fee: 'fees', kitni: 'fees', kitna: 'fees', kitne: 'fees',
-      paisa: 'fees', paise: 'fees', rupaye: 'fees',
-      samay: 'timing', samay: 'time', kab: 'timing',
-      kahan: 'address', kaha: 'address', pata: 'address', location: 'address',
-      suvidha: 'facilities', suvidhaye: 'facilities',
-      khel: 'sports', bus: 'transport', gaadi: 'transport',
-      pustakalaya: 'library', kitaab: 'books',
-      principal: 'principal', pradhanacharya: 'principal'
-    };
-    const expandedTerms = baseNormalized.split(/\s+/).map(word => aliases[word] || '').filter(Boolean);
-    const normalized = [baseNormalized, ...expandedTerms].join(' ');
-    const tokens = normalized.split(/\s+/).filter(token => token.length > 1);
+    const userTurns = this.messages.filter(entry => entry.role === 'user');
+    const incoming = this.normalizeText(userMessage);
+    const followUps = new Set([
+      'aur','aur batao','more','tell me more','and','what about',
+      'details','more details','और बताओ','और जानकारी','उसके बारे में','इसके बारे में'
+    ]);
+    const isFollowUp = followUps.has(incoming);
+    const previousQuestion = userTurns.length > 1 ? userTurns[userTurns.length - 2].content : '';
+    const effectiveMessage = isFollowUp && previousQuestion ? previousQuestion : userMessage;
+    const queryTerms = [...new Set(this.getSearchTerms(effectiveMessage))];
+    const normalized = this.normalizeText(effectiveMessage);
 
-    // Choose the strongest FAQ match instead of returning the first broad keyword.
+    // Match the most relevant school FAQ using phrase and token coverage.
     let bestFaq = null;
     let bestScore = 0;
     for (const faq of FAQ_LIST) {
       if (faq.isGreeting) continue;
       let score = 0;
+      const matchedTerms = new Set();
       for (const keyword of faq.keywords) {
         const key = this.normalizeText(keyword);
         if (!key) continue;
-        if (normalized === key) score = Math.max(score, 10 + key.length);
-        else if (key.includes(' ') && normalized.includes(key)) score = Math.max(score, 8 + key.length);
-        else if (tokens.includes(key)) score = Math.max(score, 4 + key.length);
+        if (normalized === key) score = Math.max(score, 18 + key.length);
+        else if (key.includes(' ') && normalized.includes(key)) score = Math.max(score, 14 + key.length);
+        for (const term of this.getSearchTerms(key)) {
+          if (queryTerms.includes(term)) matchedTerms.add(term);
+        }
+      }
+      if (matchedTerms.size) {
+        const coverage = matchedTerms.size / Math.max(queryTerms.length, 1);
+        score = Math.max(score, matchedTerms.size * 4 + coverage * 8);
       }
       if (score > bestScore) {
         bestScore = score;
@@ -398,17 +410,17 @@ class Chatbot {
     }
     if (bestFaq && bestScore >= 4) return bestFaq.answer;
 
-    // Search the actual pages when no FAQ is a confident match.
-    const webMatch = this.searchWebsiteContext(userMessage);
-    if (webMatch) {
-      const pageNames = webMatch.pages.map(p => p.replace('.html', ''));
-      const source = pageNames.length ? ` (स्रोत: ${pageNames.join(', ')} पेज)` : '';
-      return webMatch.answer + "\nयह जानकारी स्कूल की वेबसाइट से ली गई है।" + source;
+    // If no FAQ fits, retrieve the closest matching details from the actual school pages.
+    const websiteMatch = this.searchWebsiteContext(effectiveMessage);
+    if (websiteMatch) {
+      const pageNames = websiteMatch.pages.map(page => page.replace('.html', ''));
+      return websiteMatch.answer +
+        "\\nSource: " + pageNames.join(', ') + " page(s) on the school website.";
     }
 
-    return "मुझे इस सवाल का सही उत्तर वेबसाइट पर नहीं मिला। कृपया स्कूल कार्यालय से +91-1746-250100 पर संपर्क करें या info@balvikasglobalschool.com पर ईमेल करें। आप Admission, Fees, Classes, Timings, Facilities, Gallery या Contact के बारे में पूछ सकते हैं।";
+    return "I couldn't find a reliable answer to that on the school website. Please contact the school office at +91-1746-250100 or info@balvikasglobalschool.com. You can ask me about admissions, fees, classes, timings, facilities, transport, documents, gallery or contact details.\\n\\nइस सवाल का सही जवाब मुझे स्कूल की वेबसाइट पर नहीं मिला। कृपया स्कूल कार्यालय से +91-1746-250100 पर संपर्क करें।";
   }
-  
+
   async processMessage(message) {
     this.showTyping();
 
