@@ -89,6 +89,7 @@ class Chatbot {
   constructor() {
     this.isOpen = false;
     this.messages = [];
+    this.language = 'hi';
     this.pagesContext = [];
     // Load page context only when a visitor opens the chatbot, not during initial page load.
     this.websiteContextPromise = null;
@@ -171,7 +172,7 @@ class Chatbot {
             <div class="chatbot-typing-dot"></div>
           </div>
           <div class="chatbot-input-area">
-            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Type your message..." autocomplete="off">
+            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="अपना संदेश लिखें..." autocomplete="off">
             <button class="chatbot-send" id="chatbotSend" aria-label="Send message">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -190,7 +191,7 @@ class Chatbot {
     const closeBtn = document.getElementById('chatbotClose');
     const sendBtn = document.getElementById('chatbotSend');
     const input = document.getElementById('chatbotInput');
-    const quickReplies = document.querySelectorAll('.chatbot-quick-reply');
+    const quickReplies = document.querySelectorAll('.chatbot-quick-reply');\n    document.querySelectorAll('.chatbot-language-btn').forEach(btn => {\n      btn.addEventListener('click', () => this.setLanguage(btn.dataset.language));\n    });
     
     toggleBtn.addEventListener('click', () => {
       this.toggleChat();
@@ -425,7 +426,7 @@ class Chatbot {
         this.hideTyping();
         const answer = this.findAnswer(message);
         const filledAnswer = fillPlaceholders(answer);
-        this.addMessage(filledAnswer, 'bot');
+        this.addMessage(this.localizedText(filledAnswer), 'bot');
       }, 800);
     }
   }
